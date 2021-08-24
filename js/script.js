@@ -3,7 +3,10 @@ const overview=document.querySelector(".overview");
 const username= "nergiz2301";
 const repoList= document.querySelector(".repo-list");
 const reposs=document.querySelector(".repos");
-const repoData=document.querySelector(".repo-data")
+const repoData=document.querySelector(".repo-data");
+const viewReposButton = document.querySelector(".view-repos");
+const filterInput = document.querySelector(".filter-repos");
+
 const gitUserInfo= async function () {
     const userInfo= await fetch(`https://api.github.com/users/${username}`);
     const data= await userInfo.json();
@@ -57,12 +60,12 @@ const gitRepoName= async function(repoName){
   const repoInfo= await firstRepo.json();
   console.log(repoInfo);
 
-const fetchLanguages= await fetch(`https://github.com/nergiz2301/javascript-potluck`);
+const fetchLanguages= await fetch(`https://api.github.com/repos/${username}/${repoName}`);
 const languageData= await fetchLanguages.json();
 
-const Languages= [];
+const languages= [];
 for (const language in languageData){
-  Langauges.push(language);
+  languages.push(language);
 }
  displayRepoInfo(repoInfo,languages)
 };
@@ -81,6 +84,28 @@ const displayRepoInfo= function(repoInfo,languages){
 `;
 repoData.append(div);
 };
+
+viewReposButton.addEventListener("click", function () {
+  reposs.classList.remove("hide");
+  repoData.classList.add("hide");
+  viewReposButton.classList.add("hide");
+});
+
+// // Dynamic search
+filterInput.addEventListener("input", function (e) {
+  const searchText = e.target.value;
+  const repos = document.querySelectorAll(".repo");
+  const searchLowerText = searchText.toLowerCase();
+
+  for (const repo of repos) {
+    const repoLowerText = repo.innerText.toLowerCase();
+    if (repoLowerText.includes(searchLowerText)) {
+      repo.classList.remove("hide");
+    } else {
+      repo.classList.add("hide");
+    }
+  }
+});
 
 
 
